@@ -4,7 +4,7 @@ This Qlik Sense Extension allows you to assign any object to any state, be it an
 
 This extension is for developers to assign a given Qlik Sense object to any state, be it an Alternate 
 State or back to the main Selection State. It complements the extension "alternate states for Qlik Sense" 
-by ssimeonov. 
+by ssimeonov (http://branch.qlik.com/#/project/56728f52d1e497241ae698a7) 
 
 Once the objects are assigned, you can remove the extension again from the sheet as the settings are saved 
 with the app. 
