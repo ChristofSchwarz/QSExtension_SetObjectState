@@ -16,6 +16,9 @@ together with it's sister extension "Alternate States Actions" http://branch.qli
 Once the objects are assigned, you can remove the extension again from the sheet as the settings are saved 
 with the app. 
 
+<b>Known limitations</b> 12-Jan-2016
+Cannot change geomap objects' states. Have to look into this in future versions.
+<hr>
 Thanks to the branch community for their inspiring extensions, which represented the starting point for this extension:
 - "Alternate States" by ssimeonov (http://branch.qlik.com/#/project/56728f52d1e497241ae698a7) 
 - "Developer Tools" by by erikwett (http://branch.qlik.com/#project/56728f52d1e497241ae69854)
