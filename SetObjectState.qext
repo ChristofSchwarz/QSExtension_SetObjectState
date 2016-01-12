@@ -1,16 +1,16 @@
 {
 	"name": "SetObjectState",
-	"description": "",
+	"description": "Manage alternate states in an app and assign objects to states",
 	"icon": "list",
 	"type": "visualization",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"preview": "preview.png",
-	"author": "",
-	"homepage": "",
+	"author": "Christof Schwarz",
+	"homepage": "http://branch.qlik.com/#/project/569368a0fe261eb8649bf582",
 	"keywords": "qlik-sense, visualization",
 	"license": "",
 	"repository": "",
 	"dependencies": {
-		"qlik-sense": ">=1.0.x"
+		"qlik-sense": ">=2.1.x"
 	}
 }
