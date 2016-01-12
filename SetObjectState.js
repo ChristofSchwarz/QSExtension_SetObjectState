@@ -1,170 +1,160 @@
-/*global define */
+define(["jquery", "qlik", "css!./devtool.css"],
 
-define(["jquery", "qlik"], function($, qlik) {
-	function createBtn(cmd, text) {
-		//return '<button class="qirby-button" style="font-size:13px;" data-cmd="' + cmd + '">' + text + '</button>';
-        return '<button style="font-size:13px;" data-cmd="' + cmd + '">' + text + '</button>';
-	}
-    //var html = '';
-	return {
-		initialProperties : {
-			version : 1.0,
-            listObjectsFromSheet : "thisSheet"
-		},
-		definition : {
-			type : "items",
-			component : "accordion",
-			items : {
-                settings : {
-                    uses : "settings",
-                    items : {
-                        Listbox : {
-                            type: "items",
-							label: "Behaviour",     
-                            items : {
-								StyleOverride:{
-									ref: "listObjectsFromSheet",
-									expression:"optional",
-									translation: "List Objects From",
-									type: "string",
-									defaultValue: "thisSheet",
-									component: "dropdown",
-									options: [ {
-											value: "thisSheet",
-											label: "This Sheet"
-										}, {
-											value: "allSheets",
-											label: "All Sheets"
-										}]
-								}, 
-                                setFootnote: {
-                                    ref : "setFootnote",
-							        type : "boolean",
-							        label : "Set object footnote",
-							        component : "switch",
-                                    defaultValue : true,
-                                    options : [{
-                                        value : true,
-                                        label : "Set footnote"
-                                    }, {
-                                        value : false,
-                                        label : "Don't touch footnote"
-                                    }]                                
-                                }
-                            }
-                        }
-                    }
-                }
-			}
-		},
-		snapshot: {
-			canTakeSnapshot: false
-		},        
-		paint : function($element, layout) {
+	/**
+	 * @owner Erik Wetterberg (ewg)
+	 */
+	function ($, qlik, csscontent) {
+		$( '<link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">' ).appendTo( "head" );
+		function toggleId () {
             
-            //console.dir(layout);
-			$element.css('overflow', 'auto');
-            
-		  	var self = this;
-            var ownId = this.options.id;
-			var html = '';
-            var html2 = '';
-            var app = qlik.currApp(this);
-            var currSheet = qlik.navigation.getCurrentSheetId().sheetId;
-            
-            // get settings from accordeon menu
-            var objFromAllSheets = layout.listObjectsFromSheet === 'allSheets';
-            
-            html += '<p><b>&nbsp;Object List</b></p>';
-            html += '<div id="' + ownId + 'ObjListDiv">';
-            //html += '<div class="qirby-buttongroup">';
-            html += '<select id="' + ownId + 'ObjList">';
-            //html += '<select class="qirby-select" id="cswObjList">';
-            //html += '<option value="00fb1a8b-a3c2-4a74-84c6-fd261418540c">Current Selections</option>';
+			var cnt = $( ".devtool-tooltip" ).remove();
+            // build an array of States from the select options
+            var stList = document.getElementById("cswStatesList");
+            var i, stArr = ["$"];
+            for (i = 1; i < stList.length; i++) {
+                stArr.push(stList.options[i].text);
+            }
             
             
-            // https://help.qlik.com/sense/2.1/en-US/developer/#../Subsystems/APIs/Content/MashupAPI/Methods/getAppObjectList-method.htm 
-            
-            //debugger;
-            app.getAppObjectList( 'sheet', function(reply) 
-            {
-                //debugger;
-                $.each(reply.qAppObjectList.qItems, function(outerKey, outerValue) {
+			if ( cnt.length === 0 ) {
+				$( '.qv-object' ).each( function ( i, el ) {
                     
-                    if (objFromAllSheets || outerValue.qInfo.qId === currSheet) {
-                        // If outer loop returns the current sheet or all sheet objects are wanted ...
-                        $.each(outerValue.qData.cells, function(innerKey,innerValue){
-                            if (innerValue.name != ownId && innerValue.type != 'cswAltStateActions') { 
-                                // only add object to list if it is not this own extension
-                                html += '<option value="' + innerValue.name + '">';
-                                html += innerValue.name + ' (' + innerValue.type;
-                                if (objFromAllSheets) { html += ', sheet "' + outerValue.qData.title + '"'}
-                                html += ')</option>';
-                            }
-                        });
+                    var s = angular.element( el ).scope();
+                    if ( s.$$childHead && s.$$childHead.layout ) {
+                        var layout = s.$$childHead.layout;
+                        var model = s.$$childHead.model;
+                        if(layout.visualization != 'SetObjectState'){
+
+                            var html = '<div class="devtool-tooltip">'
+                            //if(layout.visualization != 'devtool'){ 
+                            html +=	'<a class="devtool-btn" title="Pick object"><i class="small material-icons">done</i></a>'
+                            //}
+                            html +=	'<div>' + layout.qInfo.qId + '</div>';
+                            html += '<div>' + layout.visualization;
+
+                            if (layout.hasOwnProperty('qHyperCube')) {
+                                if (layout.qHyperCube.hasOwnProperty('qStateName')) {  
+                                    if (layout.qHyperCube.qStateName != '$') {   
+                                        if(stArr.indexOf(layout.qHyperCube.qStateName) > 0) {
+                                            html += '<br><span style="background-color:yellow;">State: ' 
+                                        } else {
+                                            html += '<br><span style="background-color:lightpink;">Missing State: ' 
+                                        }
+                                        html += layout.qHyperCube.qStateName + '</span>'; 
+                                    }
+                                }
+                            } else 
+                            if (layout.hasOwnProperty('qListObject')) {
+                                if (layout.qListObject.hasOwnProperty('qStateName')) {  
+                                    if (layout.qListObject.qStateName != '$') {   
+                                        if(stArr.indexOf(layout.qListObject.qStateName) > 0) {
+                                            html += '<br><span style="background-color:yellow;">State: ' 
+                                        } else {
+                                            html += '<br><span style="background-color:lightpink;">Missing State: ' 
+                                        }
+                                        html += layout.qListObject.qStateName + '</span>'; 
+                                    }
+                                }
+                            }                             
+                            html += '</div></div>';
+                            $(el).append(html);
+                            $(el).find('.devtool-btn' ).on('click',function(){
+                                /*model.getProperties().then(function(reply){
+                                    alert(JSON.stringify(reply,null,2));
+                                });*/
+                                document.getElementById("cswObjectId").value = layout.qInfo.qId;
+                                  
+                                toggleId();
+                            });
+                            //console.log(layout.qInfo.qId + ' has ListObject ' + layout.hasOwnProperty('qListObjectDef'));
+                            //console.dir(layout.qHyperCube);
+                        }
+                    } else {
+                        console.log( "No ID found" );
                     }
-                });
+
+				});
+			}
+		}
+
+		return {
+			initialProperties: {
+				version: 2.0,
+				showTitles: false
+			}, paint: function ( $element, layout ) {
                 
-                //console.log("setting html in DOM");
-                html += '</select></div>';
-                html += '<p><b>&nbsp;State List</b></p>';
-                html += '<div id="' + ownId + 'StatesListDiv">';
-                html += '<select id="' + ownId + 'StatesList">';
+                var self = this;
+                var app = qlik.currApp(this);
+                var ownId = this.options.id;   
+                var html = '';
+                 
+				$(".devtool-btn").remove();
+				$(document.body).append( "<button class='devtool-btn fab'><i class='material-icons'>settings</i></button>" );
+				$(".devtool-btn").on( "click", toggleId );
+                
+                html += 'ObjectId '
+                    + '<input type="text" id="cswObjectId" style="width:90px;" value="" />';
+                html += '<button style="padding:0 8px 0 8px;" data-cmd="' + ownId + 'PickObject">Pick</button>&nbsp';
+                html += '<a title="Pick an object and then choose a state into which you like to put it and click [Set]." class="material-icons">info</a>';
+                html += '<br/>States ';
+                html += '<select id="cswStatesList" '
+                    + 'onchange="if(document.getElementById(\'cswStatesList\').value!=\'$\'){document.getElementById(\'' + ownId + 'EnterState\').value=document.getElementById(\'cswStatesList\').value}">';
                 html += '<option value="$">Main State</option>';
                 
-                var getLayoutPromise = app.getAppLayout();
-                
+                var getLayoutPromise = app.getAppLayout();   
                 getLayoutPromise.then (function(layout){			 
                     $.each(layout.qStateNames, function(key, value) {						
                       
-                        var selectList = document.getElementById(ownId + "StatesList");
+                        var selectList = document.getElementById("cswStatesList");
                         var option = document.createElement("option");
                         option.text = value;
                         option.value = value;
                         selectList.add(option);
-                      
                     });
                 });
                 
                 html += '</select>';
+                html += '<button style="padding:0 8px 0 8px;" data-cmd="' + ownId + 'SetState">Set</button>';
+                html += '<hr/>State ';
+                html += '<input type="text" id="' + ownId + 'EnterState" style="width:90px;" value="" />';
+                html += '<button style="padding:0 8px 0 8px;" data-cmd="' + ownId + 'AddState">Add</button>';
+                html += '<button style="padding:0 1px 0 1px;" data-cmd="' + ownId + 'DelState">Remove</button>&nbsp;';
+                html += '<a title="Here you can add and remove Alternate States on app level." class="material-icons">info</a>'
+                $element.html(html);
                 
                 
-                //html += '<input class="qirby-input" type="text" id="altStateName" value="" name="altStateName"/>';            
-                //html += '<input type="text" id="altStateName" value="" name="altStateName"/>';            
-                html += createBtn("btnChgObject", "Set");
-                html += '</div>';
-                
-		        $element.html(html);		
-                
-                $element.find('button').on('qv-activate', function() 
-                {
-				    switch($(this).data('cmd')) 
-                    {					
-					case 'btnChgObject':
-						var objId = $element.find('#' + ownId + 'ObjList').val();
-                        var stateName = $element.find('#' + ownId + 'StatesList').val();
+                $element.find('button').on('qv-activate', function() {
+                    switch($(this).data('cmd')) {
+
+                    case ownId + 'SetState':
+
+						var objId = $element.find('#cswObjectId').val();
+                        if (objId.length == 0) { 
+                            alert('No ObjectId entered or picked.'); 
+                            return; 
+                        }
+                        var stateName = $element.find('#cswStatesList').val();
                         var stateFootnote = '';
                         if (stateName != '$') {
-                            stateFootnote = 'Alternate State: ' + stateName;
+                            stateFootnote += 'Alternate State: ' + stateName;
                         }
                          
 // https://help.qlik.com/sense/2.1/en-US/developer/#../Subsystems/EngineAPI/Content/GenericObject/PropertyLevel/ListObjectDef.htm
                             
-                        return app.getObject(objId).then(function(object) 
+                        app.getObject(objId).then(function(object) 
                         {
-                            if (object.layout.qInfo.qType === 'filterpane') 
-                            {
-                                
+                            if (object.layout.qInfo.qType === 'filterpane') {
+                                // special procedure if the object is a filterpane, it consists of 1..n listboxes
                                 if(layout.setFootnote) { 
                                     object.showTitles = true;
                                     object.layout.footnote = stateFootnote; 
                                 }
                                 console.log('Object ' + objId + ' is a filterpane. Looking for listboxes inside of it ...');
                                             
-                                $.each(object.layout.qChildList.qItems, function(ArrayKey,ArrayVal){    
-                                    objId = ArrayVal.qInfo.qId;
+                                $.each(object.layout.qChildList.qItems, function(arrayKey,arrayVal){    
+                                    objId = arrayVal.qInfo.qId;
                                     
-                                    return app.getObject(objId).then(function(childObject){
+                                    app.getObject(objId).then(function(childObject){
                                         console.log('Now patching object ' + objId 
                                             + ' which is of type "' + childObject.layout.qInfo.qType + '" to State "' + stateName + '"');
                                         //console.dir(childObject);
@@ -173,53 +163,81 @@ define(["jquery", "qlik"], function($, qlik) {
                                         '{"qPath":"/qListObjectDef/qStateName", "qOp":"add", "qValue":"\\"' + stateName + '\\"" }'
                                         );
                                         
-                                        return childObject.applyPatches([JSONpatch], false);                                    
+                                        childObject.applyPatches([JSONpatch], false);                                    
                                     })
                                     
                                 })
                                 
-                            } else if (object.layout.qInfo.qType === 'CurrentSelection') {
-                                
-                                // Patching the CurrentSelections is not possible maybe in later versions >2.2
-                                
-                                console.log('Cool! You try to patch the CurrentSelections!');
-                                //console.dir(object);
-                                
-                                var JSONpatch = JSON.parse(
-                                    '{"qPath":"/qSelectionObjectDef/qStateName", "qOp":"add", "qValue":"\\"' + stateName + '\\"" }'
-                                );
-                                
-                                return object.applyPatches([JSONpatch], false);                                
-                                
                             } else {
-                                
-                                console.log('Now patching object ' + objId 
-                                    + ' which is of type "' + object.layout.qInfo.qType + '" to State "' + stateName + '"');
-                                //console.dir(object);
+                                var patchPath = '';
+                                if(object.layout.hasOwnProperty('qHyperCube')) { patchPath += '/qHyperCubeDef/qStateName'; }                
+                                if(object.layout.hasOwnProperty('qListObject')) { patchPath += '/qListObjectDef/qStateName'; }                
+                                if(patchPath == '') {
+                                    alert('Object ' + objId + " cannot be patched, it's neither a List nor a HyperCube");
+                                } else {
+                                    console.log('Now patching object ' + objId 
+                                        + ' type "' + object.layout.qInfo.qType 
+                                        + '" to State "' + stateName + '" (' + patchPath + ')');
+                                    //console.dir(object);
 
-                                var JSONpatch = JSON.parse(
-                                '{"qPath":"/qHyperCubeDef/qStateName", "qOp":"add", "qValue":"\\"' + stateName + '\\"" }'
-                                );
-                                
-                                if(layout.setFootnote) { 
-                                    object.showTitles = true;
-                                    object.layout.footnote = stateFootnote; 
+                                    var JSONpatch = JSON.parse(
+                                    '{"qPath":"' + patchPath + '", "qOp":"add", "qValue":"\\"' + stateName + '\\"" }'
+                                    );
+
+                                    if(layout.setFootnote) { 
+                                        object.showTitles = true;
+                                        object.layout.footnote = stateFootnote; 
+                                    }
+                                    object.applyPatches([JSONpatch], false);
                                 }
-                                return object.applyPatches([JSONpatch], false);
                             }
                         }); 
                             
                         app.doSave().then(function()
                         {
-						  self.paint($element, layout);
-						});	
+                            console.log('Object changed and app saved.');
+				            self.paint($element, layout);
+						});	  
+                        break;   // end of case 'SetState'                         
+                    
+                    case ownId + 'AddState':
+                        var stateName = $element.find('#' + ownId + 'EnterState').val();
+                        if (stateName.length == 0) { 
+                            alert('No State Name entered.'); 
+                            return; 
+                        } else {
+                            app.addAlternateState(stateName);
+                            app.doSave().then(function(){
+                                console.log('State added and app saved.');
+				                self.paint($element, layout);
+				            });
+                        }
+                        break; // end of case 'AddState'   
+                            
+                    case ownId + 'DelState':
+                        var stateName = $element.find('#' + ownId + 'EnterState').val();
+                        if (stateName.length == 0) { 
+                            alert('No State Name entered.'); 
+                            return; 
+                        } else {
+                            app.removeAlternateState(stateName);
+                            app.doSave().then(function(){
+                                console.log('State removed and app saved.');
+				                self.paint($element, layout);
+				            });
+                        }
+                        break; // end of case 'AddState'   
+                    
+                    case ownId + 'PickObject':
+                        //alert($(".devtool-tooltip").length);
+                        if ($(".devtool-tooltip").length == 0) {
+                            toggleId();
+                        };    
+                        
+                        break;
+                    } // end of switch
+                })
+			}
+		};
 
-
-				    }
-			     });                
-                
-            });
-			$element.html("Processing...");
-		}
-	};
-});
+	});
