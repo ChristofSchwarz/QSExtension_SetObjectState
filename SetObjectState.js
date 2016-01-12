@@ -23,7 +23,7 @@ define(["jquery", "qlik", "css!./devtool.css"],
                     if ( s.$$childHead && s.$$childHead.layout ) {
                         var layout = s.$$childHead.layout;
                         var model = s.$$childHead.model;
-                        if(layout.visualization != 'SetObjectState'){
+                        if(layout.visualization != 'SetObjectState' && layout.visualization != 'cswAltStateActions'){
 
                             var html = '<div class="devtool-tooltip">'
                             //if(layout.visualization != 'devtool'){ 
