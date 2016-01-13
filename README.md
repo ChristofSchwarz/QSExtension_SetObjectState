@@ -13,6 +13,8 @@ together with it's sister extension "Alternate States Actions" http://branch.qli
 * You can pick any object by clicking on a new pop-up menu
 * You can then assign the choosen object to a new state.
 
+![alt tag](https://raw.githubusercontent.com/ChristofSchwarz/QSExtension_SetObjectState/master/SetObjectState.animated.gif) 
+
 Once the objects are assigned, you can remove the extension again from the sheet as the settings are saved 
 with the app. 
 
