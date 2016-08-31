@@ -1,5 +1,7 @@
 # SetObjectState - manage Alternate States
 
+New: fixed for Sense 3.0 (Aug-31 2016)
+
 This Qlik Sense Extension allows you to assign any object to any state, be it an alternate state or back to the main state.
 
 This extension is for developers to assign a given Qlik Sense object to any state, be it an Alternate 
