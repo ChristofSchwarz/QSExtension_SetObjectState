@@ -7,7 +7,7 @@ State or back to the main Selection State. This version 2 is a complete stand-al
 on other extensions.
 
 > Please check out my complete Youtube video https://youtu.be/OPfE_UAGbjU where I demonstrate this extension 
-together with it's sister extension "Alternate States Actions" http://branch.qlik.com/#project/5693cd6715f524dc43e7ec37 
+together with it's sister extension "Alternate States Actions" http://branch.qlik.com/#!/project/5693cd6715f524dc43e7ec37
 
 * You can <b>create and remove</b> any state on app level.
 * You can pick any object by clicking on a new pop-up menu
