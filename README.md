@@ -1,6 +1,12 @@
 # SetObjectState - manage Alternate States
 
-New: fixed for Sense 3.0 (Aug-31 2016)
+Get the new Qlik-2-Go Alternate States extension instead of the one below for versions of Qlik Sense >= June 2017.
+
+found here: https://github.com/q2g/q2g-ext-alternatestates by Akquinet
+It needs to be compiled (typescript into javascript first, use npm run build)
+---
+
+fixed for Sense 3.0 (Aug-31 2016)
 
 This Qlik Sense Extension allows you to assign any object to any state, be it an alternate state or back to the main state.
 
