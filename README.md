@@ -1,10 +1,9 @@
 # SetObjectState - manage Alternate States
-
-Get the new Qlik-2-Go Alternate States extension instead of the one below for versions of Qlik Sense >= June 2017.
-
-found here: https://github.com/q2g/q2g-ext-alternatestates by Akquinet
-
-It needs to be compiled (typescript into javascript first, use npm run build)
+```
+With Qlik Sense Nov 2018 Edition, Alternate States are part of the native client
+```
+I am archiving this extension and recommend to manage Alternate States with Qlik Sense.
+https://help.qlik.com/en-US/sense/November2018/Subsystems/Hub/Content/Sense_Hub/Visualizations/alternate-states-comparative-analysis.htm
 ---
 
 fixed for Sense 3.0 (Aug-31 2016)
