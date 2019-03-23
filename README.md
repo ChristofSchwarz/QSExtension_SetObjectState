@@ -2,7 +2,7 @@
 ```
 With Qlik Sense Nov 2018 Edition, Alternate States are part of the native client
 ```
-I am archiving this extension and recommend to manage Alternate States with Qlik Sense.
+ * I am archiving this extension and recommend to manage Alternate States with Qlik Sense.
 https://help.qlik.com/en-US/sense/November2018/Subsystems/Hub/Content/Sense_Hub/Visualizations/alternate-states-comparative-analysis.htm
 ---
 
